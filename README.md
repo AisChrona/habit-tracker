@@ -1,41 +1,47 @@
-# Habit & Diet Tracker
+# 🌿 Mood & Habit Tracker
 
-A simple and smart **Habit & Diet Tracker** built using **HTML, CSS, and JavaScript**.  
-This project helps you track your **study hours, exercise, and food habits** for the day.  
-Based on your inputs, it gives you:
-- A summary of your day 📊
-- Food classification (Healthy, Junk, Neutral) 
-- Explanations for each item (why it’s healthy/junk/neutral)  
-- A personalized **plan for tomorrow** (morning to night)  
-
----
-
-## 🌟 Features
-- Enter study hours, exercise (yes/no), and foods you ate.  
-- Automatically classifies food based on type + cooking method.  
-- Explains *why* each food is healthy, junk, or neutral.  
-- Generates daily suggestions for study, exercise, and diet.  
-- Clean, modern UI with responsive design.  
+A simple yet effective **Mood & Habit Tracker** built using **HTML, CSS, and JavaScript**.  
+This project allows you to track your **daily study, exercise, food habits, and mood**.  
+It then analyzes your inputs and generates:  
+- ✅ A summary of your day  
+- 🥗 Food classification (Healthy, Junk, Neutral)  
+- 📖 Explanations for *why* a food is categorized that way  
+- 📅 A personalized **plan for tomorrow** with study, diet, and exercise tips  
 
 ---
 
-## 🚀 How to Use
-1. Clone/download this repo.  
-2. Open `index.html` in your browser.  
-3. Fill in your details → get your summary + next-day plan instantly.  
+## ✨ Features
+- Track **study hours**, **exercise**, and **foods eaten**.  
+- Classifies food based on type + cooking method.  
+- Explains nutritional value (e.g., *“Rice – provides carbs for energy”*).  
+- Personalized **daily routine plan** (morning to night).  
+- Clean and modern **UI design** with responsive layout.  
 
 ---
 
 ## 🛠️ Tech Stack
-- **HTML5** for structure  
-- **CSS3** for design and responsiveness  
-- **Vanilla JavaScript** for app logic  
+- **HTML** — structure  
+- **CSS** — responsive and modern UI (Inter font)  
+- **Vanilla JavaScript** — DOM manipulation and app logic  
+> No frameworks, no backend — lightweight, beginner-friendly, and easy to extend.  
 
 ---
 
-## 🔮 Future Ideas
-- Save daily logs using `localStorage`  
-- Add charts (healthy vs junk ratio)  
-- Emoji-based mood detection  
-- Weekly history view  
+## 🚀 Getting Started
+1. Clone or download this repository.  
+2. Open `index.html` in your browser.  
+3. Enter your study hours, exercise status, and food details.  
+4. Get instant **daily summary + next-day plan**.  
+
+---
+
+## 🔮 Future Improvements
+- Save logs in **localStorage** for history tracking.  
+- Add **emoji-based mood detection**.  
+- Weekly/Monthly **progress dashboard** with charts.  
+- Integration with simple **diet recommendation APIs**.  
+
+---
+
+
 
