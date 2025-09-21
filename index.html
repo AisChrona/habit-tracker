@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Habit & Diet Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      max-width: 750px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      color: #222;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #2d89ef;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.3s;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #1b5dbf;
+    }
+    .output {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fafafa;
+      border-left: 6px solid #2d89ef;
+      line-height: 1.6;
+    }
+    .plan {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eef3ff;
+      border-radius: 10px;
+    }
+    .food-method {
+      margin-top: 10px;
+    }
+    ul {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    strong {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Habit & Diet Tracker</h2>
+
+    <form id="trackerForm">
+      <label for="study">Study Hours</label>
+      <input type="number" id="study" placeholder="Enter hours studied">
+
+      <label for="exercise">Exercise</label>
+      <select id="exercise">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="food">Enter foods eaten today (comma separated)</label>
+      <textarea id="food" rows="3" placeholder="e.g., rice, burger, salad"></textarea>
+
+      <div id="foodMethodsContainer"></div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="result" class="output" style="display:none;"></div>
+  </div>
+
+  <script>
+    const foodDatabase = {
+      healthy: {
+        "dal": "Provides protein and fiber; essential for muscle growth and digestion.",
+        "rice": "Good source of carbohydrates; provides energy. Best in moderate portions.",
+        "salad": "Rich in vitamins, minerals, and fiber; low calorie and healthy for digestion.",
+        "fruit": "Full of vitamins, antioxidants, and natural sugars for energy.",
+        "vegetable": "Contains essential vitamins, minerals, and dietary fiber.",
+        "milk": "Provides calcium and protein for strong bones and muscles.",
+        "egg": "High-quality protein and essential amino acids; supports muscle and brain health.",
+        "nuts": "Contains healthy fats, protein, and fiber; good for heart and energy.",
+        "chapati": "Provides complex carbs, fiber, and energy.",
+        "idli": "Steamed, low-fat, good for digestion.",
+        "poha": "Light breakfast, provides carbs, some fiber.",
+        "lemon water": "Hydrating, contains vitamin C, helps digestion.",
+        "curd": "Rich in probiotics, good for digestion."
+      },
+      junk: {
+        "burger": "High in saturated fats and refined carbs; may lead to weight gain if frequent.",
+        "pizza": "Contains high fat, cheese, and refined carbs; low in essential nutrients.",
+        "fries": "Deep-fried; high in unhealthy fats and salt, can harm heart and weight.",
+        "ice cream": "High sugar content; low nutritional value, may spike blood sugar.",
+        "chips": "High salt and oil; excessive consumption is unhealthy.",
+        "soda": "High sugar content, no vitamins or minerals; can increase risk of obesity.",
+        "cake": "High sugar and fat; should be consumed occasionally.",
+        "candy": "Excessive sugar; low nutrients.",
+        "chocolate": "High sugar and fat; dark chocolate in moderation is okay.",
+        "fish fry": "Fried, high in oil; occasional intake okay.",
+        "samosa": "Deep-fried, high in fat and calories."
+      },
+      neutral: {
+        "pasta": "Refined carbs; okay in small portions but not nutrient-rich.",
+        "bread": "Provides energy but may lack fiber if refined; whole grain preferred.",
+        "egg curry": "Provides protein but contains oil/fats depending on preparation.",
+        "paneer": "Good protein source, but high in fat if used in excess.",
+        "chicken curry": "Provides protein but may contain oil/fats depending on preparation.",
+        "dosa": "Contains carbs; oil in preparation can increase calories.",
+        "paratha": "Fried, contains carbs; moderate portions recommended.",
+        "paneer butter masala": "High fat and calories due to cream and butter."
+      }
+    };
+
+    const cookingOptions = ["Deep-fried", "Pan-fried", "Baked/Grilled", "Boiled/Steamed/Raw"];
+
+    const foodInputEl = document.getElementById("food");
+    const foodMethodsContainer = document.getElementById("foodMethodsContainer");
+
+    // Dynamically create cooking method dropdowns when food input changes
+    foodInputEl.addEventListener("input", () => {
+      const foods = foodInputEl.value.split(",").map(f => f.trim()).filter(f => f);
+      foodMethodsContainer.innerHTML = "";
+      foods.forEach((food, index) => {
+        const div = document.createElement("div");
+        div.className = "food-method";
+        div.innerHTML = `
+          <label>${food} - Cooking Method</label>
+          <select data-food="${food}" id="method-${index}">
+            ${cookingOptions.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+          </select>
+        `;
+        foodMethodsContainer.appendChild(div);
+      });
+    });
+
+    function classifyFood(food, method) {
+      food = food.toLowerCase().trim();
+      let type = "neutral";
+      let reason = "Not listed; considered neutral. Nutritional value depends on portion, preparation, and ingredients.";
+
+      // Find base type if in database
+      for (let t in foodDatabase) {
+        for (let key in foodDatabase[t]) {
+          if (food.includes(key)) {
+            type = t;
+            reason = foodDatabase[t][key];
+            break;
+          }
+        }
+      }
+
+      // Adjust type and reason based on cooking method
+      if (method === "Deep-fried") type = "junk";
+      else if (method === "Pan-fried") {
+        if (type === "healthy") type = "neutral";
+        reason += " Pan-fried with small amount of oil; moderate fat.";
+      } else if (method === "Baked/Grilled") {
+        if (type === "junk") type = "neutral";
+        reason += " Baked/Grilled method reduces extra fat; healthier option.";
+      } else if (method === "Boiled/Steamed/Raw") {
+        if (type === "junk") type = "neutral";
+        reason += " Cooked/served without excess oil; healthier option.";
+      }
+
+      return {type, reason};
+    }
+
+    function createPlan(studyHours, exercise, healthy, junk) {
+      let plan = "<ul>";
+      plan += "<li><b>Morning:</b> Wake up early, drink a glass of water. ";
+      plan += exercise ? "Do 15 min light exercise to energize." : "Try at least 15–20 min of exercise to start strong.";
+      plan += " Have a healthy breakfast including fruits, oats, or eggs.</li>";
+
+      plan += "<li><b>Afternoon:</b> Dedicate focused time for study (1–2 hours if today < 2 hrs). Take short breaks, stay hydrated.</li>";
+
+      plan += "<li><b>Meals:</b> ";
+      if(junk > healthy) plan += "Reduce junk food intake. Prefer home-cooked meals with vegetables, protein, and whole grains.";
+      else plan += "Maintain balanced diet. Include veggies, fruits, protein-rich foods, and limit fried items.";
+      plan += "</li>";
+
+      plan += "<li><b>Evening:</b> Light physical activity (walk/cycle/stretch). Reflect on daily goals and progress.</li>";
+
+      plan += "<li><b>Night:</b> Avoid heavy meals late. Revise or plan for tomorrow. Sleep early for better focus.</li>";
+      plan += "</ul>";
+      return plan;
+    }
+
+    document.getElementById("trackerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const studyHours = parseInt(document.getElementById("study").value) || 0;
+      const exercise = document.getElementById("exercise").value === "yes";
+      const foods = foodInputEl.value.split(",").map(f => f.trim()).filter(f => f);
+
+      let healthyItems = [], junkItems = [], neutralItems = [];
+
+      foods.forEach((food, index) => {
+        const method = document.getElementById(`method-${index}`)?.value || "Boiled/Steamed/Raw";
+        const info = classifyFood(food, method);
+        if (info.type === "healthy") healthyItems.push({name: food, reason: info.reason});
+        else if (info.type === "junk") junkItems.push({name: food, reason: info.reason});
+        else neutralItems.push({name: food, reason: info.reason});
+      });
+
+      const healthy = healthyItems.length;
+      const junk = junkItems.length;
+      const neutral = neutralItems.length;
+
+      const today = new Date().toLocaleDateString();
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = `
+        <h3>${today}</h3>
+        <p><strong>Today’s Summary:</strong></p>
+        <ul>
+          <li>Studied: ${studyHours} hours</li>
+          <li>Exercise: ${exercise ? "Done" : "Not Done"}</li>
+          <li>Food → Healthy: ${healthy} ${healthyItems.length ? `(${healthyItems.map(f=>f.name).join(", ")})` : ""}</li>
+          <li>Food → Junk: ${junk} ${junkItems.length ? `(${junkItems.map(f=>f.name).join(", ")})` : ""}</li>
+          <li>Food → Neutral: ${neutral} ${neutralItems.length ? `(${neutralItems.map(f=>f.name).join(", ")})` : ""}</li>
+        </ul>
+
+        ${healthyItems.length ? `<p><strong>Healthy Items:</strong></p><ul>${healthyItems.map(f=>`<li>${f.name} - ${f.reason}</li>`).join("")}</ul>` : ""}
+        ${junkItems.length ? `<p><strong>Junk Items:</strong></p><ul>${junkItems.map(f=>`<li>${f.name} - ${f.reason}</li>`).join("")}</ul>` : ""}
+        ${neutralItems.length ? `<p><strong>Neutral Items:</strong></p><ul>${neutralItems.map(f=>`<li>${f.name} - ${f.reason}</li>`).join("")}</ul>` : ""}
+
+        <div class="plan">${createPlan(studyHours, exercise, healthy, junk)}</div>
+      `;
+    });
+  </script>
+</body>
+</html>
