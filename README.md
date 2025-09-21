@@ -4,7 +4,7 @@ A simple and smart **Habit & Diet Tracker** built using **HTML, CSS, and JavaScr
 This project helps you track your **study hours, exercise, and food habits** for the day.  
 Based on your inputs, it gives you:
 - A summary of your day 📊
-- Food classification (Healthy, Junk, Neutral) 🍎🍔
+- Food classification (Healthy, Junk, Neutral) 
 - Explanations for each item (why it’s healthy/junk/neutral)  
 - A personalized **plan for tomorrow** (morning to night)  
 
